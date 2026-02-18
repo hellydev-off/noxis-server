@@ -74,13 +74,28 @@ let pellets = Array.from({ length: 500 }, () => ({
 
 const AppDataSource = new DataSource({
   type: "postgres",
-  host: "dpg-d6anjqa48b3s73bee670-a",
-  port: 5432,
-  username: "poster",
-  password: "KbL31psgpgrcogXvzkgw85VX5dNlm3if",
-  database: "noxis",
+  // 1. Используем URL из переменных окружения Render, если он есть,
+  // иначе собираем из данных со скриншота
+  url: process.env.DATABASE_URL,
+
+  // Данные из вашего скриншота (для локальной отладки или если нет URL)
+  host: process.env.DB_HOST || "dpg-d6anjqa48b3s73bee670-a",
+  port: parseInt(process.env.DB_PORT || "5432"),
+  username: process.env.DB_USER || "poster",
+  password: process.env.DB_PASSWORD || "KbL31psgpgrcogXvzkgw85VX5dNlm3if",
+  database: process.env.DB_NAME || "noxis",
+
+  // 2. Сущности
   entities: [User],
+
+  // 3. Синхронизация (создаст таблицу User при запуске)
   synchronize: true,
+  logging: true,
+
+  // 4. КРИТИЧНО ДЛЯ RENDER: Настройка SSL
+  ssl: {
+    rejectUnauthorized: false,
+  },
 });
 
 const app = express();
@@ -339,7 +354,19 @@ setInterval(() => {
 }, 1000 / TICK_RATE);
 
 const port = process.env.PORT || 3000;
-httpServer.listen(port, () => {
-  console.log(`🚀 NOXIS Server Live on port ${port}`);
-  console.log(`📱 Health check: http://localhost:${port}/health`);
-});
+async function startServer() {
+  try {
+    console.log("Подключение к базе данных...");
+    await AppDataSource.initialize();
+    console.log("✅ База данных подключена, таблицы проверены/созданы");
+
+    httpServer.listen(port, () => {
+      console.log(`🚀 Сервер запущен на порту ${port}`);
+    });
+  } catch (error) {
+    console.error("❌ Ошибка при старте сервера:", error);
+    process.exit(1); // Останавливаем процесс, если БД не доступна
+  }
+}
+
+startServer();
