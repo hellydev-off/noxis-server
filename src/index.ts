@@ -8,6 +8,9 @@ import bcrypt from "bcrypt";
 import { User } from "./entities/User";
 import cors from "cors";
 
+import TelegramBot from "node-telegram-bot-api";
+const BOT_TOKEN = "8191176053:AAHYnQnuGSob3eFJvSoP72bPWv4qE_t1sfc";
+
 const JWT_SECRET = process.env.JWT_SECRET || "noxis_premium_secret_key";
 
 const TICK_RATE = 60;
@@ -22,6 +25,30 @@ interface GamePlayer {
   mass: number;
   angle: number;
 }
+
+const bot = new TelegramBot(BOT_TOKEN, { polling: true });
+
+// /start — отправляем кнопку, которая открывает мини‑приложение
+bot.onText(/\/start/, (msg) => {
+  const chatId = msg.chat.id;
+
+  bot.sendMessage(
+    chatId,
+    "Добро пожаловать в NOXIS!\n\nНажми кнопку ниже, чтобы запустить игру.",
+    {
+      reply_markup: {
+        inline_keyboard: [
+          [
+            {
+              text: "Играть в NOXIS",
+              web_app: { url: "https://noxis-frontend.onrender.com/" }, // замени на реальный URL мини‑аппа
+            },
+          ],
+        ],
+      },
+    },
+  );
+});
 
 const players = new Map<string, GamePlayer>();
 
@@ -47,9 +74,9 @@ let pellets = Array.from({ length: 500 }, () => ({
 
 const AppDataSource = new DataSource({
   type: "postgres",
-  host: "localhost",
+  host: "dpg-d6anjqa48b3s73bee670-a",
   port: 5432,
-  username: "postgres",
+  username: "poster",
   password: "KbL31psgpgrcogXvzkgw85VX5dNlm3if",
   database: "noxis",
   entities: [User],
