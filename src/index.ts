@@ -63,6 +63,20 @@ app.use(cors());
 const httpServer = createServer(app);
 const io = new Server(httpServer, { cors: { origin: "*" } });
 
+let dbInitialized = false;
+
+app.get("/health", (req, res) => {
+  res.json({
+    status: "ok",
+    db: dbInitialized ? "connected" : "not_required",
+    timestamp: new Date().toISOString(),
+  });
+});
+
+app.get("/", (req, res) => {
+  res.json({ message: "NOXIS API работает! /health для проверки" });
+});
+
 // Auth endpoints
 app.post("/api/register", async (req, res) => {
   const { username, password } = req.body;
@@ -89,6 +103,21 @@ app.post("/api/login", async (req, res) => {
   }
   res.status(401).json({ error: "Auth failed" });
 });
+
+async function initDB() {
+  if (!dbInitialized) {
+    try {
+      console.log("Подключение к БД...");
+      await AppDataSource.initialize();
+      dbInitialized = true;
+      console.log("✅ БД подключена");
+    } catch (error) {
+      console.error("❌ Ошибка БД:", error);
+      dbInitialized = false;
+    }
+  }
+  return dbInitialized;
+}
 
 io.use((socket, next) => {
   const token = socket.handshake.auth.token;
@@ -282,6 +311,8 @@ setInterval(() => {
   });
 }, 1000 / TICK_RATE);
 
-AppDataSource.initialize().then(() => {
-  httpServer.listen(3000, () => console.log("NOXIS Server Live on :3000"));
+const port = process.env.PORT || 3000;
+httpServer.listen(port, () => {
+  console.log(`🚀 NOXIS Server Live on port ${port}`);
+  console.log(`📱 Health check: http://localhost:${port}/health`);
 });
