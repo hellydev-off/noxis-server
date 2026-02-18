@@ -50,7 +50,7 @@ const AppDataSource = new DataSource({
   host: "localhost",
   port: 5432,
   username: "postgres",
-  password: "",
+  password: "KbL31psgpgrcogXvzkgw85VX5dNlm3if",
   database: "noxis",
   entities: [User],
   synchronize: true,
@@ -63,7 +63,7 @@ app.use(cors());
 const httpServer = createServer(app);
 const io = new Server(httpServer, { cors: { origin: "*" } });
 
-let dbInitialized = false;
+let dbInitialized = true;
 
 app.get("/health", (req, res) => {
   res.json({
