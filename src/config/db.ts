@@ -18,6 +18,7 @@ export const AppDataSource = new DataSource({
 });
 
 // export const AppDataSource = new DataSource({
+
 //   type: "postgres",
 //   host: process.env.DB_HOST || "dpg-d6anjqa48b3s73bee670-a",
 //   port: parseInt(process.env.DB_PORT || "5432"),
