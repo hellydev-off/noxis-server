@@ -7,11 +7,11 @@ dotenv.config();
 
 export const AppDataSource = new DataSource({
   type: "postgres",
-  host: "dpg-d6anjqa48b3s73bee670-a",
+  host: "dpg-d6bd6rd6ubrc73chg640-a",
   port: 5432,
-  username: "poster",
-  password: "KbL31psgpgrcogXvzkgw85VX5dNlm3if",
-  database: "noxis",
+  username: "noxis_e3xo_user",
+  password: "mcInTzZHiqbRWn5OizTJzfELhbbAdDOT",
+  database: "noxis_e3xo",
   entities: [User, Market],
   synchronize: true,
   logging: true,
