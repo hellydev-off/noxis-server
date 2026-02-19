@@ -7,15 +7,27 @@ dotenv.config();
 
 export const AppDataSource = new DataSource({
   type: "postgres",
-  host: process.env.DB_HOST || "dpg-d6anjqa48b3s73bee670-a",
-  port: parseInt(process.env.DB_PORT || "5432"),
-  username: process.env.DB_USER || "poster",
-  password: process.env.DB_PASSWORD || "KbL31psgpgrcogXvzkgw85VX5dNlm3if",
-  database: process.env.DB_NAME || "noxis",
+  host: "dpg-d6anjqa48b3s73bee670-a",
+  port: "5432",
+  username: "poster",
+  password: "KbL31psgpgrcogXvzkgw85VX5dNlm3if",
+  database: "noxis",
   entities: [User, Market],
   synchronize: true,
   logging: true,
 });
+
+// export const AppDataSource = new DataSource({
+//   type: "postgres",
+//   host: process.env.DB_HOST || "dpg-d6anjqa48b3s73bee670-a",
+//   port: parseInt(process.env.DB_PORT || "5432"),
+//   username: process.env.DB_USER || "poster",
+//   password: process.env.DB_PASSWORD || "KbL31psgpgrcogXvzkgw85VX5dNlm3if",
+//   database: process.env.DB_NAME || "noxis",
+//   entities: [User, Market],
+//   synchronize: true,
+//   logging: true,
+// });
 
 export const initDatabase = async () => {
   try {
