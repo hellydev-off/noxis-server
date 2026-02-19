@@ -170,9 +170,9 @@ app.post("/api/register", async (req, res) => {
 });
 
 app.post("/api/login", async (req, res) => {
-  const { username, password } = req.body;
-  const user = await AppDataSource.getRepository(User).findOneBy({ username });
-  if (user && (await bcrypt.compare(password, user.password))) {
+  const { user_id } = req.body;
+  const user = await AppDataSource.getRepository(User).findOneBy({ user_id });
+  if (user) {
     const token = jwt.sign(
       { id: user.id, username: user.username },
       JWT_SECRET,
