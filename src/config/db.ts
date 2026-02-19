@@ -8,7 +8,7 @@ dotenv.config();
 export const AppDataSource = new DataSource({
   type: "postgres",
   host: "dpg-d6anjqa48b3s73bee670-a",
-  port: "5432",
+  port: 5432,
   username: "poster",
   password: "KbL31psgpgrcogXvzkgw85VX5dNlm3if",
   database: "noxis",
